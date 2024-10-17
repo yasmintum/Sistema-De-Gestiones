@@ -1,0 +1,161 @@
+import tkinter as tk
+from tkinter import messagebox
+import Articulos 
+import Clientes
+
+#ventana principal
+ventana = tk.Tk()
+ventana.title("Supertienda “MAS” ")
+ventana.geometry("400x500")
+# Título
+titulo = tk.Label(ventana, text="Sistema De Gestiones", font=("Arial", 26))
+titulo.pack(pady=10)
+
+
+def agregar_cliente_gui():
+    def agregar():
+        nombre_Cliente = entry_nombre.get()
+        Apellido_Cliente = entry_apellido.get()
+        Nit_Cliente = entry_Nit.get()
+        Dpi_Cliente = entry_Dpi.get()
+        telefono_Cliente = entry_telefono.get()
+
+        if not nombre_Cliente or not Nit_Cliente or not Dpi_Cliente or not Apellido_Cliente or not telefono_Cliente:
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+
+        try:
+            telefono_Cliente = int(telefono_Cliente)
+            Nit_Cliente = int(Nit_Cliente)
+            Dpi_Cliente = int(Dpi_Cliente)
+        except ValueError:
+            messagebox.showerror("Error", "Nit y Dpi deben ser números completos")
+            return
+
+        try:
+            Clientes.agregarCliente(nombre_Cliente, Apellido_Cliente, Nit_Cliente, Dpi_Cliente, telefono_Cliente)
+            messagebox.showinfo("Éxito", "Cliente se agregó correctamente")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al agregar al cliente: {e}")
+
+    # Salida de pantalla por medio de ventanas 
+    ventana_agregar_cliente = tk.Toplevel()
+    ventana_agregar_cliente.title("Agregar Cliente")
+
+    tk.Label(ventana_agregar_cliente, text = "Nombre").grid(row=0, column=0)
+    entry_nombre = tk.Entry(ventana_agregar_cliente)
+    entry_nombre.grid(row=0, column=1)
+
+    tk.Label(ventana_agregar_cliente, text = "Apellido").grid(row=1, column=0)
+    entry_apellido = tk.Entry(ventana_agregar_cliente)
+    entry_apellido.grid(row=1, column=1)
+
+    tk.Label(ventana_agregar_cliente, text= "Nit").grid(row=2, column=0)
+    entry_Nit = tk.Entry(ventana_agregar_cliente)
+    entry_Nit .grid(row=2, column=1)
+
+    tk.Label(ventana_agregar_cliente, text= "Dpi").grid(row=3, column=0)
+    entry_Dpi =tk.Entry(ventana_agregar_cliente)
+    entry_Dpi.grid(row=3, column=1) 
+
+    tk.Label(ventana_agregar_cliente, text= "Telefono").grid(row=4, column=0)
+    entry_telefono = tk.Entry(ventana_agregar_cliente)
+    entry_telefono.grid(row=4, column=1)
+
+    tk.Button(ventana_agregar_cliente, text="Agregar", command=agregar). grid(row=5, columnspan=2)
+
+def agregar_articulos_gui():
+    def agregar():
+        nombre_articulo = entry_nombre.get()
+        cantidad = entry_cantidad.get()
+        precio = entry_precio.get()
+        proveedor = entry_proveedor.get()
+
+        if not nombre_articulo or not cantidad or not precio or not proveedor:
+            messagebox.showerror("Error", "Todos los campos son obligatorios")
+            return
+
+        try:
+            cantidad = int(cantidad)
+            precio = float(precio)
+        except ValueError:
+            messagebox.showerror("Error", "Cantidad debe ser un número entero y precio debe ser un número")
+            return
+
+        # Llama a la función agregarBodega() con los datos necesarios
+        try:
+            Articulos.agregarBodega(nombre_articulo, cantidad, precio, proveedor)
+            messagebox.showinfo("Éxito", "Artículo se agregó correctamente")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al agregar el artículo: {e}")
+
+    # Crear ventana secundaria (no una nueva ventana principal)
+    ventana_agregar = tk.Toplevel()
+    ventana_agregar.title("Agregar Artículo a la Bodega")
+
+    # Campos de entrada
+    tk.Label(ventana_agregar, text="Nombre del Artículo:").grid(row=0, column=0)
+    entry_nombre = tk.Entry(ventana_agregar)
+    entry_nombre.grid(row=0, column=1)
+
+    tk.Label(ventana_agregar, text="Cantidad:").grid(row=1, column=0)
+    entry_cantidad = tk.Entry(ventana_agregar)
+    entry_cantidad.grid(row=1, column=1)
+
+    tk.Label(ventana_agregar, text="Precio Unitario:").grid(row=2, column=0)
+    entry_precio = tk.Entry(ventana_agregar)
+    entry_precio.grid(row=2, column=1)
+
+    tk.Label(ventana_agregar, text="Código del Proveedor:").grid(row=3, column=0)
+    entry_proveedor = tk.Entry(ventana_agregar)
+    entry_proveedor.grid(row=3, column=1)
+
+    # Botón para agregar el artículo
+    tk.Button(ventana_agregar, text="Agregar", command=agregar).grid(row=4, columnspan=2)
+
+def buscar_cliente_gui():
+    def buscar():
+        id_cliente = entry_id_cliente.get()
+        if not id_cliente:
+            messagebox.showerror("Erroor", "El campo es obligatorio")
+            return
+    try:
+        resultado = Articulos.buscarCliente(id_cliente)
+        if resultado:
+            messagebox.showinfo("Cliente encontrado", resultado)
+        else:
+            messagebox.showinfo("Cliente no encontrado", "No se encontró un cliente con ese ID")
+    except Exception as e:
+        messagebox.showerror("Error", f"Error al buscar el cliente: {e}")
+
+    #Creacion de salida de pantalla por medio de ventanas
+    ventana_buscar_cliente = tk.Toplevel()
+    ventana_buscar_cliente.title("Buscar Cliente")
+
+    tk.Label(ventana_buscar_cliente, text="ID del Cliente:").grid(row=0, column=0)
+    entry_id_cliente = tk.Entry(ventana_buscar_cliente)
+    entry_id_cliente.grid(row=0, column=1)
+
+    tk.Button(ventana_buscar_cliente, text="Buscar", command=buscar).grid(row=1, columnspan=2)
+
+btn_salir = tk.Button(ventana, text="Salir", command=ventana.quit, width=20)
+
+
+# Botones para abrir las diferentes ventanas o realizar acciones
+btn_Articulos = tk.Button(ventana, text="ARTÍCULOS", command=agregar_articulos_gui, width=20)  # Corrección aquí
+btn_Articulos.pack(pady=10)
+
+btn_Clientes = tk.Button(ventana, text="CLIENTES", command=agregar_cliente_gui, width=20)  # Ahora sí apunta a agregar clientes
+btn_Clientes.pack(pady=10)
+
+bt_Facturas = tk.Button(ventana, text="FACTURAS", width=20)
+bt_Facturas.pack(pady=10)
+
+btn_Empleados = tk.Button(ventana, text="EMPLEADOS", width=20)
+btn_Empleados.pack(pady=10)
+
+btn_salir = tk.Button(ventana, text="SALIR", width=20)
+btn_salir.pack(pady=10)
+
+# Ejecutar la interfaz
+ventana.mainloop()
